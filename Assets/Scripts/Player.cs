@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Player : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class Player : MonoBehaviour
     public float jumpForce = 40f;
     public float checkRadius = 0.2f;
     public LayerMask groundLayer;
-    public float jumpTime = 1f;
+    public float jumpTime = 0.35f;
 
     public LayerMask wallLayer;
     public float wallSlideSpeed = 3f;
@@ -21,10 +22,7 @@ public class Player : MonoBehaviour
     private bool isJumping;
 
     private bool isWallSliding;
-    private float wallJumpDirection;
-    private float wallJumpTime = 0.5f; // Adjust this value for wall jump duration
-    private float wallJumpCounter;
-    public Vector2 wallJumpPower = new Vector2(10f, 10f); // Adjust this for wall jump power
+    public Vector2 wallJumpPower = new Vector2(40f, 40f); // Adjust this for wall jump power
 
     private bool isFacingRight = true;
 
@@ -63,7 +61,6 @@ public class Player : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space) && isJumping)
         {
-            Debug.Log("Whee!!!");
             if (jumpTimeCounter > 0)
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
@@ -91,58 +88,43 @@ public class Player : MonoBehaviour
 
         if (movementOption.CanWallJump()){
 
-            //check to see if you are on a wall.
-            //if so, slide down the wall
+            bool wallTouchingRight = Physics2D.OverlapCircle(bottomRightCorner, checkRadius, wallLayer);
+            bool wallTouchingLeft = Physics2D.OverlapCircle(bottomLeftCorner, checkRadius, wallLayer);
 
-            //also, if you are on this wall, then if space is pressed:
-            //jump whee
+            isWallSliding = (wallTouchingRight || wallTouchingLeft) && !isGrounded;
 
-            if (isFacingRight){
-                WallSlide(bottomLeftCorner);
-                WallJump(bottomLeftCorner);
-            } else {
-                WallSlide(bottomRightCorner);
-                WallJump(bottomRightCorner);
-            }
-            
-        }
-    }
-
-    private void WallSlide(Vector2 wallCheck)
-    {
-        isWallSliding = Physics2D.OverlapCircle(wallCheck, checkRadius, wallLayer) && !isGrounded;
-
-        if (isWallSliding)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlideSpeed, float.MaxValue));
-        }
-    }
-
-    private void WallJump(Vector2 wallCheck)
-    {
-        if (isWallSliding)
-        {
-            isWallSliding = false;
-        }
-        
-        if (Physics2D.OverlapCircle(wallCheck, checkRadius, wallLayer) && !isGrounded)
-        {
-            wallJumpDirection = -transform.localScale.x;
-            wallJumpCounter = wallJumpTime;
-        }
-
-        if (wallJumpCounter > 0)
-        {
-            wallJumpCounter -= Time.deltaTime;
-
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (isWallSliding)
             {
-                isJumping = true;
-                rb.velocity = new Vector2(wallJumpPower.x * wallJumpDirection, wallJumpPower.y);
-                wallJumpCounter = 0;
+                rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlideSpeed, float.MaxValue));
             }
+
+            float wallJumpDirection = 1f;
+            if (wallTouchingRight) {
+                wallJumpDirection = -1f;
+            }
+
+            if (isWallSliding && !isJumping && Input.GetKeyDown(KeyCode.Space)){
+                rb.velocity = new Vector2(wallJumpPower.x * wallJumpDirection, wallJumpPower.y);
+                StartCoroutine(MoveAwayFromWall(0.1f, 10f, wallJumpDirection));
+                jumpTimeCounter = jumpTime;
+                isJumping = true;
+            } 
         }
     }
+
+    private IEnumerator MoveAwayFromWall(float duration, float speed, float direction)
+    {
+        float timer = 0f;
+        
+        while (timer < duration && !isGrounded)
+        {
+            // Move the player away from the wall
+            rb.velocity = new Vector2(speed * direction, rb.velocity.y);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+    }
+
 
     private void Flip()
     {
