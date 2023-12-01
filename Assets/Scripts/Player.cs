@@ -26,6 +26,16 @@ public class Player : MonoBehaviour
 
     private bool isFacingRight = true;
 
+    public float dashVelocity = 40f;
+    public float dashTime = 0.1f;
+    public float dashCooldown = 0.5f;
+
+    public TrailRenderer trailRenderer;
+
+    private bool isDashing = false;
+    private bool canDash = true;
+    private Vector2 dashDirection;
+
 
     private void Start()
     {
@@ -35,7 +45,12 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        playerData.currentPosition = transform.position; // Update currentPosition constantly
+        playerData.currentPosition = transform.position;
+
+        if (isDashing)
+        {
+            GetComponent<Rigidbody2D>().velocity = dashDirection * dashVelocity;
+        }
     }
 
     private void Update()
@@ -110,6 +125,27 @@ public class Player : MonoBehaviour
                 isJumping = true;
             } 
         }
+
+        if (movementOption.CanDash()){
+            bool dashInput = Input.GetKeyDown(KeyCode.UpArrow);
+
+            if (dashInput && canDash)
+            {
+                Debug.Log("dash");
+                isDashing = true;
+                canDash = false;
+                trailRenderer.emitting = true;
+
+                dashDirection = new Vector2(moveInput, 0f).normalized;
+                
+                if (moveInput == 0){
+                    float characterDirection = isFacingRight ? 1f : -1f;
+                    dashDirection = new Vector2(characterDirection, 0f).normalized;
+                }
+
+                StartCoroutine(StopDashingAfterDelay());
+            }
+        }
     }
 
     private IEnumerator MoveAwayFromWall(float duration, float speed, float direction)
@@ -125,6 +161,16 @@ public class Player : MonoBehaviour
         }
     }
 
+    private IEnumerator StopDashingAfterDelay()
+    {
+        yield return new WaitForSeconds(dashTime);
+
+        trailRenderer.emitting = false; // Disable trail renderer
+        isDashing = false;
+
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
+    }
 
     private void Flip()
     {
