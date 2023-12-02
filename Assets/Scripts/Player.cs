@@ -131,7 +131,6 @@ public class Player : MonoBehaviour
 
             if (dashInput && canDash)
             {
-                Debug.Log("dash");
                 isDashing = true;
                 canDash = false;
                 trailRenderer.emitting = true;
@@ -180,5 +179,14 @@ public class Player : MonoBehaviour
         transform.localScale = playerScale;
     }
 
+    public void Progress()
+    {
+        Debug.Log("Yay");
+    }
+
+    public void Die()
+    {
+        Debug.Log("Boo");
+    }
 
 }
