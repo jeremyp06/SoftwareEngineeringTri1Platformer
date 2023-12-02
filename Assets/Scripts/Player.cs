@@ -36,17 +36,18 @@ public class Player : MonoBehaviour
     private bool canDash = true;
     private Vector2 dashDirection;
 
+    private bool movementDisabled = false;
+    private Explodable _explodable;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         jumpTimeCounter = jumpTime;
+        _explodable = GetComponent<Explodable>();
     }
 
     private void FixedUpdate()
     {
-        playerData.currentPosition = transform.position;
-
         if (isDashing)
         {
             GetComponent<Rigidbody2D>().velocity = dashDirection * dashVelocity;
@@ -55,9 +56,14 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (!movementDisabled){
+            Movement();
+        }
+    }
 
-        Vector2 bottomLeftCorner = new Vector2(playerData.currentPosition.x - GetComponent<BoxCollider2D>().bounds.extents.x, playerData.currentPosition.y - GetComponent<BoxCollider2D>().bounds.extents.y);
-        Vector2 bottomRightCorner = new Vector2(playerData.currentPosition.x + GetComponent<BoxCollider2D>().bounds.extents.x, playerData.currentPosition.y - GetComponent<BoxCollider2D>().bounds.extents.y);
+    private void Movement(){
+        Vector2 bottomLeftCorner = new Vector2(transform.position.x - GetComponent<BoxCollider2D>().bounds.extents.x, transform.position.y - GetComponent<BoxCollider2D>().bounds.extents.y);
+        Vector2 bottomRightCorner = new Vector2(transform.position.x + GetComponent<BoxCollider2D>().bounds.extents.x, transform.position.y - GetComponent<BoxCollider2D>().bounds.extents.y);
 
         bool isLeftGrounded = Physics2D.OverlapCircle(bottomLeftCorner, checkRadius, groundLayer);
         bool isRightGrounded = Physics2D.OverlapCircle(bottomRightCorner, checkRadius, groundLayer);
@@ -186,7 +192,6 @@ public class Player : MonoBehaviour
 
     public void Die()
     {
-        Debug.Log("Boo");
+        _explodable.explode();
     }
-
 }
