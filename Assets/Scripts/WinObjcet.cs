@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class DeathObject : MonoBehaviour
+public class WinObject : MonoBehaviour
 {
-    public GameEvent onGameLost;
+    public GameEvent onGameWon;
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            onGameLost.TriggerEvent();
+            onGameWon.TriggerEvent();
         }
     }
 }
