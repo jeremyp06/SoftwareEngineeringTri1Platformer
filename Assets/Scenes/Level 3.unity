@@ -5033,7 +5033,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 754bbdd7f0c39a846890ea0a09b28e77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementOption: {fileID: 11400000, guid: 5eca9c86a1320a648a17718e85d99846, type: 2}
+  levelOneMovement: {fileID: 11400000, guid: 7301cfecade053344b8b6be98e0da614, type: 2}
+  levelTwoMovement: {fileID: 11400000, guid: 2a44965e4cdd6b84bace97803b91472a, type: 2}
+  levelThreeMovement: {fileID: 11400000, guid: 5eca9c86a1320a648a17718e85d99846, type: 2}
   playerData: {fileID: 11400000, guid: 845dbb93c73c3ab4faf52525db2dbe88, type: 2}
   speed: 10
   jumpForce: 10

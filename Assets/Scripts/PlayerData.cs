@@ -5,9 +5,14 @@ using UnityEngine;
 [CreateAssetMenu]
 public class PlayerData : ScriptableObject
 {
-    [HideInInspector] public int level;
-    [HideInInspector] public int pastTime;
-    [HideInInspector] public int currentTime;
+    [HideInInspector] public int level = 0;
+    [HideInInspector] public float pastTime = 0;
+    [HideInInspector] public float currentTime = 0;
+
+    private void Update()
+    {
+        currentTime += Time.deltaTime;
+    }
 
     public void ResetData()
     {

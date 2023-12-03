@@ -49,22 +49,37 @@ public class Player : MonoBehaviour
         jumpTimeCounter = jumpTime;
         _explodable = GetComponent<Explodable>();
 
+        playerData.level = SceneManager.GetActiveScene().buildIndex;
+
         movementOption = getMovementOption(playerData.level);
+        Debug.Log (playerData.level);
+        if (movementOption.CanWallJump()){
+            Debug.Log("We can Wall Jump now!");
+        } if (movementOption.CanDash()){
+            Debug.Log("We can dash now!");
+        }
     }
 
-    private void getMovementOption(int level){
+    private MovementOption getMovementOption(int level){
         if (level == 1){
+            Debug.Log("Level 1 movement active");
             return levelOneMovement;
+            
         } else if (level == 2){
+            Debug.Log("Level 2 movement active");
             return levelTwoMovement;
-        } else if (level == 3){
+            
+        } else {
+            Debug.Log("Level 3 movement active");
             return levelThreeMovement;
+            
         }
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         movementOption = getMovementOption(playerData.level);
+        Debug.Log (playerData.level);
     }
 
     private void FixedUpdate()
@@ -79,7 +94,8 @@ public class Player : MonoBehaviour
     {
         if (!movementDisabled){
             Movement();
-        }
+        } 
+        playerData.level = SceneManager.GetActiveScene().buildIndex;
     }
 
     private void Movement(){

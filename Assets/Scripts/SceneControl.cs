@@ -33,16 +33,14 @@ public class SceneControl : MonoBehaviour
     private IEnumerator NextSceneWithDelay(float delay)
     {
         // Wait for the specified delay
+        playerData.NextLevel();
+
         yield return new WaitForSeconds(delay);
 
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
 
-        playerData.NextLevel();
+        playerData.RestartTimer();
 
         SceneManager.LoadScene(currentSceneIndex+1);
     }
-
-
-
-
 }
