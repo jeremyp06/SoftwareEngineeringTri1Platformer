@@ -1,9 +1,13 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
-    public MovementOption movementOption;
+    private MovementOption movementOption;
+    public MovementOption levelOneMovement;
+    public MovementOption levelTwoMovement;
+    public MovementOption levelThreeMovement;
     public PlayerData playerData;
 
     public float speed = 5f;
@@ -44,6 +48,23 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         jumpTimeCounter = jumpTime;
         _explodable = GetComponent<Explodable>();
+
+        movementOption = getMovementOption(playerData.level);
+    }
+
+    private void getMovementOption(int level){
+        if (level == 1){
+            return levelOneMovement;
+        } else if (level == 2){
+            return levelTwoMovement;
+        } else if (level == 3){
+            return levelThreeMovement;
+        }
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        movementOption = getMovementOption(playerData.level);
     }
 
     private void FixedUpdate()
@@ -187,11 +208,17 @@ public class Player : MonoBehaviour
 
     public void Progress()
     {
-        Debug.Log("Yay");
+        StartCoroutine(TempDisableMovement());
     }
 
     public void Die()
     {
         _explodable.explode();
+    }
+
+    private IEnumerator TempDisableMovement(){
+        movementDisabled = true;
+        yield return new WaitForSeconds(3f);
+        movementDisabled = false;
     }
 }

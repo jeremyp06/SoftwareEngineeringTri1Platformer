@@ -9,7 +9,6 @@ public class PlayerData : ScriptableObject
     [HideInInspector] public int pastTime;
     [HideInInspector] public int currentTime;
 
-
     public void ResetData()
     {
         pastTime = 0;
@@ -20,6 +19,10 @@ public class PlayerData : ScriptableObject
     public void NextLevel(){
         level += 1;
         pastTime += currentTime;
+        currentTime = 0;
+    }
+
+    public void RestartTimer(){
         currentTime = 0;
     }
 }

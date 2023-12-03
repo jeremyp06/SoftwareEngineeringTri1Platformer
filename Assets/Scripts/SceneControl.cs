@@ -6,6 +6,8 @@ public class SceneControl : MonoBehaviour
 {
 
     public float delay;
+    public PlayerData playerData;
+
     public void RestartSceneWithDelay()
     {
         StartCoroutine(RestartWithDelay(delay));
@@ -17,6 +19,8 @@ public class SceneControl : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+        playerData.RestartTimer();
 
         SceneManager.LoadScene(currentSceneIndex);
     }
@@ -33,8 +37,12 @@ public class SceneControl : MonoBehaviour
 
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
 
+        playerData.NextLevel();
+
         SceneManager.LoadScene(currentSceneIndex+1);
     }
+
+
 
 
 }
