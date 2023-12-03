@@ -9,11 +9,6 @@ public class PlayerData : ScriptableObject
     [HideInInspector] public float pastTime = 0;
     [HideInInspector] public float currentTime = 0;
 
-    private void Update()
-    {
-        currentTime += Time.deltaTime;
-    }
-
     public void ResetData()
     {
         pastTime = 0;

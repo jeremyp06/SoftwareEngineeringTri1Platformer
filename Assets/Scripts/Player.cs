@@ -94,8 +94,13 @@ public class Player : MonoBehaviour
     {
         if (!movementDisabled){
             Movement();
+            UpdateTimer();
         } 
         playerData.level = SceneManager.GetActiveScene().buildIndex;
+    }
+
+    private void UpdateTimer(){
+        playerData.currentTime += Time.deltaTime;
     }
 
     private void Movement(){

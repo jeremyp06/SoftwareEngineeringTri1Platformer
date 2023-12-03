@@ -43,4 +43,8 @@ public class SceneControl : MonoBehaviour
 
         SceneManager.LoadScene(currentSceneIndex+1);
     }
+
+    public void ResetPlayerData(){
+        playerData.ResetData();
+    }
 }
