@@ -69,7 +69,6 @@ public class Player : MonoBehaviour
         } else {
             Debug.Log("Level 3 movement active");
             return levelThreeMovement;
-            
         }
     }
 
@@ -128,26 +127,35 @@ public class Player : MonoBehaviour
 
         if (isGrounded)
         {
+            // Resets the jump time counter when the character is on the ground
             jumpTimeCounter = jumpTime;
         }
 
+        // Checks for a spacebar press and ensures the character is grounded to initiate a jump
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             isJumping = true;
         }
 
+        // Checks for continuous spacebar press while the character is jumping
         if (Input.GetKey(KeyCode.Space) && isJumping)
         {
+            // Allows for variable jump height based on remaining jump time
             if (jumpTimeCounter > 0)
             {
+                // Applies upward velocity for the jump and decreases the jump time counter
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
                 jumpTimeCounter -= Time.deltaTime;
             }
             else
             {
+                // Ends the jumping state if the maximum jump time is reached
                 isJumping = false;
             }
-        } else if (isJumping) {
+        }
+        // Handles stopping the jump if the jump key is released or the character is not jumping anymore
+        else if (isJumping)
+        {
             isJumping = false;
         }
 
@@ -188,22 +196,38 @@ public class Player : MonoBehaviour
             } 
         }
 
-        if (movementOption.CanDash()){
+        // Checks if the player can perform a dash based on certain conditions
+        if (movementOption.CanDash())
+        {
+            // Checks if the dash input (Up Arrow key) is pressed
             bool dashInput = Input.GetKeyDown(KeyCode.UpArrow);
 
+            // Checks if the dash input is detected and the player is allowed to dash
             if (dashInput && canDash)
             {
+                // Indicates that the player is currently dashing
                 isDashing = true;
+
+                // Prevents the player from dashing again until the current dash is complete
                 canDash = false;
+
+                // Activates the trail effect for visual indication of the dash
                 trailRenderer.emitting = true;
 
+                // Sets the dash direction based on the player's input
                 dashDirection = new Vector2(moveInput, 0f).normalized;
-                
-                if (moveInput == 0){
+
+                // Checks if the player is not providing any horizontal input for the dash
+                if (moveInput == 0)
+                {
+                    // Determines the character's direction (left or right) for the dash
                     float characterDirection = isFacingRight ? 1f : -1f;
+                    
+                    // Sets the dash direction to move horizontally based on the character's facing direction
                     dashDirection = new Vector2(characterDirection, 0f).normalized;
                 }
 
+                // Initiates a coroutine to stop the dash after a delay
                 StartCoroutine(StopDashingAfterDelay());
             }
         }
@@ -243,17 +267,22 @@ public class Player : MonoBehaviour
 
     public void Progress()
     {
+        // Initiates a coroutine to temporarily disable movement
         StartCoroutine(TempDisableMovement());
     }
 
     public void Die()
     {
+        // Calls the explode() method from the _explodable object
         _explodable.explode();
     }
 
-    private IEnumerator TempDisableMovement(){
+    private IEnumerator TempDisableMovement()
+    {
+        // Temporarily disables movement
         movementDisabled = true;
+        // Waits for 3 seconds before enabling movement again
         yield return new WaitForSeconds(3f);
-        movementDisabled = false;
+        movementDisabled = false; // Enables movement after the wait time
     }
 }
