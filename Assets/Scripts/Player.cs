@@ -43,6 +43,8 @@ public class Player : MonoBehaviour
     private bool movementDisabled = false;
     private Explodable _explodable;
 
+    private Animator animator;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -52,12 +54,7 @@ public class Player : MonoBehaviour
         playerData.level = SceneManager.GetActiveScene().buildIndex;
 
         movementOption = getMovementOption(playerData.level);
-        Debug.Log (playerData.level);
-        if (movementOption.CanWallJump()){
-            Debug.Log("We can Wall Jump now!");
-        } if (movementOption.CanDash()){
-            Debug.Log("We can dash now!");
-        }
+        animator = GetComponent<Animator>();
     }
 
     private MovementOption getMovementOption(int level){
@@ -92,11 +89,28 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+
         if (!movementDisabled){
             Movement();
             UpdateTimer();
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isJumping", false);
         } 
+
         playerData.level = SceneManager.GetActiveScene().buildIndex;
+
+        if (isGrounded){
+            if (Input.GetAxis("Horizontal") != 0 && isGrounded){
+                animator.SetBool("isWalking", true);
+                animator.SetBool("isJumping", false);
+            } else {
+                animator.SetBool("isWalking", false);
+                animator.SetBool("isJumping", false);
+            }
+        } else {
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isJumping", true);
+        }
     }
 
     private void UpdateTimer(){

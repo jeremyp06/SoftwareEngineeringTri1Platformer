@@ -19,6 +19,4 @@ public class TimerDisplay : MonoBehaviour
             }
         }
     }
-
-    // Other methods (StopTimer, ResetTimer) remain the same...
 }

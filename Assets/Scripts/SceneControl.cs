@@ -20,8 +20,10 @@ public class SceneControl : MonoBehaviour
 
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
 
-        playerData.RestartTimer();
-
+        if (playerData.level == 1){
+            playerData.RestartTimer();
+        }
+        
         SceneManager.LoadScene(currentSceneIndex);
     }
 
